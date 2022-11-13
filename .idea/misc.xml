@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/drawable-v24/check_box_background.xml" value="0.17" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/drawable-v24/ic_baseline_delete.xml" value="0.17" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/drawable-v24/ic_baseline_edit.xml" value="0.17" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/drawable/check_box_shadow.xml" value="0.17" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/drawable/edit_xxx_background.xml" value="0.17" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.17" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout-xlarge/activity_main.xml" value="0.18325242718446602" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout/activity_main.xml" value="0.12162162162162163" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout/activity_todo_add.xml" value="0.14719202898550723" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout/activity_todo_detail.xml" value="0.1609375" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout/activity_todo_edit.xml" value="0.14719202898550723" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout/check_box_background.xml" value="0.1609375" />
+        <entry key="..\:/Android/AndroidStudioProjects/ToDo/app/src/main/res/layout/item.xml" value="0.22" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

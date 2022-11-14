@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 
 import com.redrum.todo.model.Todo;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;

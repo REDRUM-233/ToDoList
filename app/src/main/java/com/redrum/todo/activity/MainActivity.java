@@ -22,12 +22,9 @@ import com.redrum.todo.model.Todo;
 
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView todoRecyclerView;
     private TodoAdapter todoAdapter;
-    private DBHelper dbHelper;
     private SQLiteDatabase db;
     public static Handler handler;
-    private Intent detailIntent;
     private Intent editIntent;
 
     @Override
@@ -36,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DBHelper(this, "temp_1.db3", null, 1);
+        DBHelper dbHelper = new DBHelper(this, "temp_2.db3", null, 1);
         db = dbHelper.getReadableDatabase();
 
         handler = new Handler() {
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         DBHelper.insertData(db, todo);
                     }
                 }
-                todoAdapter.refreash();
+                todoAdapter.refresh();
                 todoAdapter.notifyDataSetChanged();
             }
         };
@@ -63,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         data.putSerializable("action", "add");
         editIntent = new Intent(this, TodoEdit.class);
         editIntent.putExtras(data);
-        detailIntent = new Intent(this, TodoDetail.class);
+        Intent detailIntent = new Intent(this, TodoDetail.class);
 
-        todoRecyclerView = findViewById(R.id.recycle_view);
+        RecyclerView todoRecyclerView = findViewById(R.id.recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         todoRecyclerView.setLayoutManager(layoutManager);

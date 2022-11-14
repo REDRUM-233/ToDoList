@@ -1,6 +1,6 @@
 package com.redrum.todo.model;
 
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -67,6 +67,7 @@ public class Todo implements Serializable {
         this.desc = desc;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Todo{" +
@@ -90,7 +91,7 @@ public class Todo implements Serializable {
                     return "每周" + str[1] + "事件-本次事件截止时间:" + str[2] + "月" + str[3] + "日";
             }
             case 2:
-                return "每月事件-本次事件截止时间:" + str[1] + "月" + str[2] + "日";
+                return "每月事件-本次事件截止时间:" + str[1] + "月";
             case 3:
                 return "每年事件-本次事件截止时间:" + str[1] + "年";
             case 4:
@@ -105,7 +106,7 @@ public class Todo implements Serializable {
         cal.setTime(date);
         switch (Integer.parseInt(str[0])) {
             case 0:
-                return true;
+                return checked == 0;
             case 1:
                 return str[2].contains(1 + cal.get(Calendar.MONTH) + "") &&
                         Integer.parseInt(str[3]) <= cal.get(Calendar.DAY_OF_MONTH) &&
@@ -121,7 +122,7 @@ public class Todo implements Serializable {
     }
 
     public boolean isRenewable() {
-        return "123".contains(type.split("-")[0]);
+        return "1234".contains(type.split("-")[0]);
     }
 
     public Todo renew() {
@@ -139,6 +140,9 @@ public class Todo implements Serializable {
             case 3:
                 type = str[0] + "-" + str[1] + "-" + (cal.get(Calendar.YEAR) + 1);
                 return this;
+            case 4: {
+                type = str[0] + "-" + (Math.max(Integer.parseInt(str[1]) - 1, 0));
+            }
         }
         return this;
     }

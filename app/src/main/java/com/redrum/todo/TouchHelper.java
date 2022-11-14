@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.redrum.todo.adapter.TodoAdapter;
 
 public class TouchHelper extends ItemTouchHelper.SimpleCallback {
-    private TodoAdapter adapter;
+    private final TodoAdapter adapter;
 
     public TouchHelper(TodoAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
@@ -36,19 +36,9 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
             builder.setTitle("删除");
             builder.setMessage("是否删除该Todo？");
             builder.setPositiveButton("确定",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            adapter.delete(position);
-                        }
-                    });
+                    (dialog, which) -> adapter.delete(position));
             builder.setNegativeButton("返回",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            adapter.notifyItemChanged(viewHolder.getLayoutPosition());
-                        }
-                    });
+                    (dialog, which) -> adapter.notifyItemChanged(viewHolder.getLayoutPosition()));
             AlertDialog dialog = builder.create();
             dialog.show();
         } else {

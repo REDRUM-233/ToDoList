@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     public static Handler handler;
     private Intent detailIntent;
+    private Intent editIntent;
 
     @Override
     @SuppressLint({"HandlerLeak", "NotifyDataSetChanged"})
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DBHelper(this, "temp.db3", null, 1);
+        dbHelper = new DBHelper(this, "temp_1.db3", null, 1);
         db = dbHelper.getReadableDatabase();
 
         handler = new Handler() {
@@ -58,12 +59,17 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        detailIntent = new Intent(this, TodoEdit.class);
+        Bundle data = new Bundle();
+        data.putSerializable("action", "add");
+        editIntent = new Intent(this, TodoEdit.class);
+        editIntent.putExtras(data);
+        detailIntent = new Intent(this, TodoDetail.class);
+
         todoRecyclerView = findViewById(R.id.recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         todoRecyclerView.setLayoutManager(layoutManager);
-        todoAdapter = new TodoAdapter(this, detailIntent, db);
+        todoAdapter = new TodoAdapter(this, detailIntent, editIntent, db);
         todoRecyclerView.setAdapter(todoAdapter);
 
         ItemTouchHelper itemTouchHelper = new
@@ -72,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.main_fab);
         fab.setOnClickListener(view -> {
-            Intent addIntent = new Intent(this, TodoAdd.class);
             // 启动intent对应的Activity
-            startActivity(addIntent);
+            startActivity(editIntent);
         });
     }
 }

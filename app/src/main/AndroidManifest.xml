@@ -13,9 +13,6 @@
             android:name=".activity.TodoDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.TodoAdd"
-            android:exported="false" />
-        <activity
             android:name=".activity.TodoEdit"
             android:exported="false" />
         <activity

@@ -17,13 +17,23 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/edit_icon_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_brightness_1_24"
+            app:layout_constraintBottom_toTopOf="@id/edit_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/edit_text_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:text="待办事项"
-            android:textSize="20sp"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:textSize="25sp"
+            app:layout_constraintLeft_toRightOf="@id/edit_icon_title"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
@@ -38,15 +48,58 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_text_title" />
 
-        <TextView
-            android:id="@+id/edit_text_desc"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/edit_icon_type"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="详细描述"
-            android:textSize="20sp"
+            android:src="@drawable/ic_baseline_cached_24"
+            app:layout_constraintBottom_toTopOf="@id/edit_type"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_title" />
+
+        <TextView
+            android:id="@+id/edit_text_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="事项类型"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@id/edit_type"
+            app:layout_constraintLeft_toRightOf="@id/edit_icon_type"
+            app:layout_constraintTop_toBottomOf="@id/edit_title" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/edit_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_xxx_background"
+            android:padding="7dp"
+            android:text="默认事项"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_type" />
+
+        <ImageView
+            android:id="@+id/edit_icon_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_filter_frames_24"
+            app:layout_constraintBottom_toTopOf="@id/edit_desc"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_type" />
+
+        <TextView
+            android:id="@+id/edit_text_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="详细描述"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@id/edit_desc"
+            app:layout_constraintLeft_toRightOf="@id/edit_icon_desc"
+            app:layout_constraintTop_toBottomOf="@id/edit_type" />
 
         <EditText
             android:id="@+id/edit_desc"

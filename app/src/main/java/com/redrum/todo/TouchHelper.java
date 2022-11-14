@@ -40,6 +40,7 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
             builder.setNegativeButton("返回",
                     (dialog, which) -> adapter.notifyItemChanged(viewHolder.getLayoutPosition()));
             AlertDialog dialog = builder.create();
+            adapter.notifyItemChanged(viewHolder.getLayoutPosition());
             dialog.show();
         } else {
             adapter.notifyItemChanged(viewHolder.getLayoutPosition());

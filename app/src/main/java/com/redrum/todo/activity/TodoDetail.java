@@ -21,7 +21,7 @@ import com.redrum.todo.model.Todo;
 
 public class TodoDetail extends AppCompatActivity {
     Todo todo;
-
+//艹
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

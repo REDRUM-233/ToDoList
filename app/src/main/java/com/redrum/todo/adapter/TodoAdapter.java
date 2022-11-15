@@ -16,54 +16,73 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.redrum.todo.DBHelper;
 import com.redrum.todo.R;
 import com.redrum.todo.activity.MainActivity;
+import com.redrum.todo.activity.TodoDetail;
+import com.redrum.todo.activity.TodoEdit;
 import com.redrum.todo.model.Todo;
 
 import java.util.List;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
+    //    数据表
     private List<Todo> todoList;
+    //    用于启动其他activity的intent
     private Intent editIntent;
     private Intent detailIntent;
+    //    数据库
     private SQLiteDatabase db;
+    //    垃圾adapter巴拉巴拉很多限制，
+//    所以直接用MainActivity（挟天子以令诸侯！
     private MainActivity mainActivity;
 
-    public TodoAdapter(MainActivity activity, Intent detailIntent, Intent editIntent, SQLiteDatabase db) {
+    //    初始化
+    public TodoAdapter(MainActivity activity, SQLiteDatabase db) {
         this.mainActivity = activity;
-        this.detailIntent=detailIntent;
-        this.editIntent = editIntent;
         this.db = db;
+        this.detailIntent = new Intent(mainActivity, TodoDetail.class);
+        this.editIntent = new Intent(mainActivity, TodoEdit.class);
+//        手写的读数据库方法
         this.todoList = DBHelper.getAllData(db);
     }
 
-    // 创建列表项组件的方法，该方法创建组件会被自动缓存
+    // 创建列表项组件的方法，该方法创建组件会被自动缓存（fkjava自己的注释
     @NonNull
     @Override
     public TodoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+//        就是读res里面的item布局，只是代码又臭又长
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
         return new TodoViewHolder(view, this);
     }
 
-    // 为列表项组件绑定数据的方法，每次组件重新显示出来时都会重新执行该方法
+    // 为列表项组件绑定数据的方法，每次组件重新显示出来时都会重新执行该方法（fkjava自己的注释
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
+//        设置item里面的各种操作
+//        设置显示文本
         holder.textView.setText(todoList.get(position).getTitle());
+//        设置点击响应
+//        打开detail页面
         holder.textView.setOnClickListener(view -> {
+//            打包数据
             Bundle data = new Bundle();
             data.putSerializable("Info", todoList.get(position));
+//            复制intent
             Intent intent = new Intent(detailIntent);
+//            装数据
             intent.putExtras(data);
-            // 启动intent对应的Activity
+            // 启动intent对应的Activity（fkjava自己的注释
             mainActivity.startActivity(intent);
         });
     }
 
-    // 该方法的返回值决定包含多少个列表项
+    // 该方法的返回值决定包含多少个列表项（fkjava自己的注释
     @Override
     public int getItemCount() {
         return todoList.size();
     }
 
+    //    缓存工具，有什么用我也不知道，但是必须要写
+//    就是把item里面的组件都创建一下，链接一下
     public static class TodoViewHolder extends RecyclerView.ViewHolder {
 
         public CheckBox checkBox;
@@ -76,17 +95,16 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         }
     }
 
-    public Context getContext() {
-        return mainActivity;
-    }
-
+    //    手写的删除一项
     public void delete(int position) {
         Todo todo = todoList.get(position);
         DBHelper.deleteData(db, todo);
         todoList.remove(position);
+//        好像有点用
         notifyItemRemoved(position);
     }
 
+    //    手写的更新跳转函数————指跳转到更新界面edit_activity
     public void update(int position) {
         Bundle data = new Bundle();
         data.putSerializable("Info", todoList.get(position));
@@ -96,7 +114,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         mainActivity.startActivity(intent);
     }
 
+    //    手写的刷新数据集函数
     public void refreash() {
         this.todoList = DBHelper.getAllData(db);
+    }
+
+//    给touchHelper用的，让它也挟天子以令诸侯（不是
+    public Context getContext() {
+        return mainActivity;
     }
 }

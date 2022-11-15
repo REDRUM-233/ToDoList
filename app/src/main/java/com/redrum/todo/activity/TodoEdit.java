@@ -22,18 +22,22 @@ public class TodoEdit extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_edit);
 
+//        说过了
         ActionBar actionBar = getSupportActionBar();
         if (actionBar == null)
             throw new AssertionError();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+//        跟add同理
         EditText title = findViewById(R.id.edit_title);
         EditText desc = findViewById(R.id.edit_desc);
 
+//        获得需要修改的todo
         Intent intent = getIntent();
         Todo todo = (Todo) intent.getSerializableExtra("Info");
 
+//        唯一跟add不一样的就是把数据给拿过来显示了
         title.setText(todo.getTitle());
         desc.setText(todo.getDesc());
 

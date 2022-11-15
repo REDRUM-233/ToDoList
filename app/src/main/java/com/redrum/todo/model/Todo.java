@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class Todo implements Serializable {
     private int id;
     private int checked;
+//    实际上已经被我阉割了
     /* 格式设置
      * 普通单次任务 0
      * 每周任务 1-从小到大记录生成时间如135,17(0表示每周单次任务)-(该事件月-日)
@@ -16,6 +17,8 @@ public class Todo implements Serializable {
     private String type;
     private String title;
     private String desc;
+
+//    下面全是自动生成的
 
     public Todo(int id, int checked, String type, String title, String desc) {
         this.id = id;

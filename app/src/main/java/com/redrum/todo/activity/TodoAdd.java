@@ -31,7 +31,7 @@ public class TodoAdd extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.edit_fab);
         fab.setOnClickListener(view -> {
-            Todo update_todo = new Todo(-1, "1", title.getText().toString(), desc.getText().toString());
+            Todo update_todo = new Todo(-1, 0, "0", title.getText().toString(), desc.getText().toString());
             Message message = new Message();
             Bundle data = new Bundle();
             data.putSerializable("info", update_todo);

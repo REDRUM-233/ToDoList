@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private SQLiteDatabase db;
     public static Handler handler;
+    private Intent editIntent;
     private Intent detailIntent;
 
     @Override
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DBHelper(this, "temp.db3", null, 1);
+        dbHelper = new DBHelper(this, "temp_002.db3", null, 1);
         db = dbHelper.getReadableDatabase();
 
         handler = new Handler() {
@@ -46,24 +47,29 @@ public class MainActivity extends AppCompatActivity {
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
                     DBHelper.updateData(db, todo);
-                } else {
-                    if (msg.what == 514) {
-                        Bundle data = msg.getData();
-                        Todo todo = (Todo) data.getSerializable("info");
-                        DBHelper.insertData(db, todo);
-                    }
+                } else if (msg.what == 514) {
+                    Bundle data = msg.getData();
+                    Todo todo = (Todo) data.getSerializable("info");
+                    DBHelper.insertData(db, todo);
+                }
+                else if(msg.what==1919810){
+                    Bundle data = msg.getData();
+                    Todo todo = (Todo) data.getSerializable("info");
+                    DBHelper.deleteData(db, todo);
                 }
                 todoAdapter.refreash();
                 todoAdapter.notifyDataSetChanged();
             }
         };
 
-        detailIntent = new Intent(this, TodoEdit.class);
+        detailIntent = new Intent(this, TodoDetail.class);
+        editIntent = new Intent(this, TodoEdit.class);
+
         todoRecyclerView = findViewById(R.id.recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         todoRecyclerView.setLayoutManager(layoutManager);
-        todoAdapter = new TodoAdapter(this, detailIntent, db);
+        todoAdapter = new TodoAdapter(this, detailIntent, editIntent, db);
         todoRecyclerView.setAdapter(todoAdapter);
 
         ItemTouchHelper itemTouchHelper = new

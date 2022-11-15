@@ -23,13 +23,15 @@ import java.util.List;
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
     private List<Todo> todoList;
-    private Intent baseIntent;
+    private Intent editIntent;
+    private Intent detailIntent;
     private SQLiteDatabase db;
     private MainActivity mainActivity;
 
-    public TodoAdapter(MainActivity activity, Intent intent, SQLiteDatabase db) {
+    public TodoAdapter(MainActivity activity, Intent detailIntent, Intent editIntent, SQLiteDatabase db) {
         this.mainActivity = activity;
-        this.baseIntent = intent;
+        this.detailIntent=detailIntent;
+        this.editIntent = editIntent;
         this.db = db;
         this.todoList = DBHelper.getAllData(db);
     }
@@ -49,7 +51,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.textView.setOnClickListener(view -> {
             Bundle data = new Bundle();
             data.putSerializable("Info", todoList.get(position));
-            Intent intent = new Intent(baseIntent);
+            Intent intent = new Intent(detailIntent);
             intent.putExtras(data);
             // 启动intent对应的Activity
             mainActivity.startActivity(intent);
@@ -88,7 +90,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     public void update(int position) {
         Bundle data = new Bundle();
         data.putSerializable("Info", todoList.get(position));
-        Intent intent = new Intent(baseIntent);
+        Intent intent = new Intent(editIntent);
         intent.putExtras(data);
         // 启动intent对应的Activity
         mainActivity.startActivity(intent);

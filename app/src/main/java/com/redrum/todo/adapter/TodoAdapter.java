@@ -58,6 +58,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
 //        设置item里面的各种操作
+//        设置保存的状态
+        holder.checkBox.setChecked(todoList.get(position).getChecked() == 1);
+//        设置相应
+        holder.checkBox.setOnCheckedChangeListener((compoundButton, is) -> {
+            Todo todo = todoList.get(position);
+            todo.setChecked(is ? 1 : 0);
+            DBHelper.updateData(db, todo);
+        });
 //        设置显示文本
         holder.textView.setText(todoList.get(position).getTitle());
 //        设置点击响应
@@ -115,7 +123,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     }
 
     //    手写的刷新数据集函数
-    public void refreash() {
+    public void refresh() {
         this.todoList = DBHelper.getAllData(db);
     }
 

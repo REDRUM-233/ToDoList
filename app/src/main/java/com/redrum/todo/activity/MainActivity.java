@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     DBHelper.deleteData(db, todo);
                 }
 //                自定义的刷新界面函数
-                todoAdapter.refreash();
+                todoAdapter.refresh();
 //                顾名思义，不过不知道有没有用
                 todoAdapter.notifyDataSetChanged();
             }

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,6 +26,8 @@ import com.redrum.todo.model.Todo;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Timer;
 
 //主界面
 public class MainActivity extends AppCompatActivity {
@@ -59,14 +62,6 @@ public class MainActivity extends AppCompatActivity {
 //        获得可读写数据库
         db = dbHelper.getReadableDatabase();
 
-        //处理概览
-        dateView = findViewById(R.id.main_overview_date);
-        status = findViewById(R.id.main_overview_status);
-        progressBar = findViewById(R.id.main_overview_progress);
-        dateView.setText(new SimpleDateFormat("MM月dd日 EEEE").format(new Date()));
-        status_refresh(db);
-
-
 //        消息处理机
         handler = new Handler() {
             @Override
@@ -76,24 +71,20 @@ public class MainActivity extends AppCompatActivity {
 //                    处理更新信息
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
-                    DBHelper.updateData(db, todo);
+                    todoAdapter.updateData(todo);
                 } else if (msg.what == 514) {
 //                    处理新增信息
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
-                    DBHelper.insertData(db, todo);
-                    status_refresh(db);
+                    todoAdapter.insertData(todo);
+                    status_refresh();
                 } else if (msg.what == 1919810) {
 //                    处理删除信息
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
-                    DBHelper.deleteData(db, todo);
-                    status_refresh(db);
+                    todoAdapter.deleteData(todo);
+                    status_refresh();
                 }
-//                自定义的刷新界面函数
-                todoAdapter.refresh();
-//                顾名思义，不过不知道有没有用
-                todoAdapter.notifyDataSetChanged();
             }
         };
 
@@ -105,8 +96,15 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         todoRecyclerView.setLayoutManager(layoutManager);
 //        设置数据和单个事项管理的adapter
-        todoAdapter = new TodoAdapter(this, db);
+        todoAdapter = new TodoAdapter(this, DBHelper.getAllData(db));
         todoRecyclerView.setAdapter(todoAdapter);
+
+        //处理概览
+        dateView = findViewById(R.id.main_overview_date);
+        status = findViewById(R.id.main_overview_status);
+        progressBar = findViewById(R.id.main_overview_progress);
+        dateView.setText(new SimpleDateFormat("MM月dd日 EEEE").format(new Date()));
+        status_refresh();
 
 //        照抄的滑动机制
         ItemTouchHelper itemTouchHelper = new
@@ -122,11 +120,43 @@ public class MainActivity extends AppCompatActivity {
             // 启动intent对应的Activity
             startActivity(addIntent);
         });
+
     }
 
     @SuppressLint("SetTextI18n")
-    public void status_refresh(SQLiteDatabase db) {
-        status.setText("今天已完成" + DBHelper.getCheckedCount(db) + "个待办事项（共" + DBHelper.getAllData(db).size() + "个）");
-        progressBar.setProgress((int) Math.floor(100.0 * DBHelper.getCheckedCount(db) / DBHelper.getAllData(db).size()));
+    public void status_refresh() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Todo> todoList = todoAdapter.getTodoList();
+                int cnt = 0;
+                int size = todoList.size();
+                for (Todo i : todoList)
+                    cnt += i.getChecked();
+                status.setText("今天已完成" + cnt + "个待办事项（共" + size + "个）");
+                progressBar.setProgress((int) Math.floor(100.0 * cnt / size));
+            }
+        }).run();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("cao", "run: 存了嘛你妈的");
+        DBHelper.updateDataBase(db, todoAdapter.getTodoList());
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("cao", "run: 存了嘛你妈的");
+        DBHelper.updateDataBase(db, todoAdapter.getTodoList());
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("cao", "run: 存了嘛你妈的");
+        DBHelper.updateDataBase(db, todoAdapter.getTodoList());
+        super.onDestroy();
     }
 }

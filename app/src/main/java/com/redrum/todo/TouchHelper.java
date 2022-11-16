@@ -32,6 +32,7 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getLayoutPosition();
         if (direction == ItemTouchHelper.LEFT) {
+            adapter.notifyItemChanged(viewHolder.getLayoutPosition());
             AlertDialog.Builder builder = new AlertDialog.Builder(adapter.getContext());
             builder.setTitle("删除");
             builder.setMessage("是否删除该Todo？");
@@ -39,7 +40,7 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            adapter.delete(position);
+                            adapter.deleteData(position);
                         }
                     });
             builder.setNegativeButton("返回",

@@ -75,34 +75,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 , new String[]{todo.getChecked() + "", todo.getType(), todo.getTitle(), todo.getDesc() == null ? "" : todo.getDesc()});
     }
 
-    public static void deleteData(SQLiteDatabase db, int id) {
-        db.execSQL(
-                "delete from todo_info where id=?;"
-                , new String[]{id + ""});
-    }
-
-    public static void deleteData(SQLiteDatabase db, Todo todo) {
-        db.execSQL(
-                "delete from todo_info where id=?;"
-                , new String[]{todo.getId() + ""});
-    }
-
-    public static void updateData(SQLiteDatabase db, int checked, String type, String title, String desc, int id) {
-        db.execSQL(
-                "update todo_info set checked = ?, type = ?, title = ?, desc = ? where id = ?;"
-                , new String[]{checked + "", type, title, desc == null ? "" : desc, id + ""});
-    }
-
-    public static void updateData(SQLiteDatabase db, Todo todo) {
-        db.execSQL(
-                "update todo_info set checked = ?, type = ?, title = ?, desc = ? where id = ?;"
-                , new String[]{todo.getChecked() + "", todo.getType(), todo.getTitle(), todo.getDesc() == null ? "" : todo.getDesc(), todo.getId() + ""});
-    }
-
     public static int getCheckedCount(SQLiteDatabase db) {
         int cnt = 0;
         for (Todo i : getAllData(db))
             cnt += i.getChecked();
         return cnt;
+    }
+
+    public static void updateDataBase(SQLiteDatabase db, List<Todo> list) {
+        db.execSQL("delete from todo_info;");
+        for (Todo i : list) {
+            insertData(db, i);
+        }
     }
 }

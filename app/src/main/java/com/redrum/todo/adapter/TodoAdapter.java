@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.redrum.todo.activity.TodoEdit;
 import com.redrum.todo.model.Todo;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
@@ -29,20 +31,16 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     //    用于启动其他activity的intent
     private Intent editIntent;
     private Intent detailIntent;
-    //    数据库
-    private SQLiteDatabase db;
     //    垃圾adapter巴拉巴拉很多限制，
 //    所以直接用MainActivity（挟天子以令诸侯！
     private MainActivity mainActivity;
 
     //    初始化
-    public TodoAdapter(MainActivity activity, SQLiteDatabase db) {
+    public TodoAdapter(MainActivity activity, List<Todo> todoList) {
         this.mainActivity = activity;
-        this.db = db;
+        this.todoList = todoList;
         this.detailIntent = new Intent(mainActivity, TodoDetail.class);
         this.editIntent = new Intent(mainActivity, TodoEdit.class);
-//        手写的读数据库方法
-        this.todoList = DBHelper.getAllData(db);
     }
 
     // 创建列表项组件的方法，该方法创建组件会被自动缓存（fkjava自己的注释
@@ -61,11 +59,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 //        设置保存的状态
         holder.checkBox.setChecked(todoList.get(position).getChecked() == 1);
 //        设置相应
-        holder.checkBox.setOnCheckedChangeListener((compoundButton, is) -> {
+        holder.checkBox.setOnClickListener(view -> {
             Todo todo = todoList.get(position);
-            todo.setChecked(is ? 1 : 0);
-            DBHelper.updateData(db, todo);
-            mainActivity.status_refresh(db);
+            todo.setChecked(~todo.getChecked() & 1);
+            updateData(todo);
+            mainActivity.status_refresh();
         });
 //        设置显示文本
         holder.textView.setText(todoList.get(position).getTitle());
@@ -104,14 +102,39 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         }
     }
 
+
+    public void insertData(Todo todo) {
+        todoList.add(todo);
+        mainActivity.status_refresh();
+        notifyItemInserted(todoList.size());
+    }
+
     //    手写的删除一项
-    public void delete(int position) {
+    public void deleteData(int position) {
         Todo todo = todoList.get(position);
-        DBHelper.deleteData(db, todo);
         todoList.remove(position);
-        mainActivity.status_refresh(db);
-//        好像有点用
+        mainActivity.status_refresh();
         notifyItemRemoved(position);
+    }
+
+    public void deleteData(Todo todo) {
+        int position = todoList.indexOf(todo);
+        todoList.remove(todo);
+        notifyItemChanged(position);
+    }
+
+    public void updateData(Todo todo) {
+        int position = 0;
+        for (Todo i : todoList) {
+            if (i.getId() == todo.getId()) {
+                boolean flag = i.getTitle() == todo.getTitle() && i.getChecked() == todo.getChecked();
+                i = todo;
+                if (!flag)
+                    notifyItemChanged(position);
+                break;
+            }
+            position++;
+        }
     }
 
     //    手写的更新跳转函数————指跳转到更新界面edit_activity
@@ -124,12 +147,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         mainActivity.startActivity(intent);
     }
 
-    //    手写的刷新数据集函数
-    public void refresh() {
-        this.todoList = DBHelper.getAllData(db);
+    public List<Todo> getTodoList() {
+        return todoList;
     }
 
-//    给touchHelper用的，让它也挟天子以令诸侯（不是
+    //    给touchHelper用的，让它也挟天子以令诸侯（不是
     public Context getContext() {
         return mainActivity;
     }

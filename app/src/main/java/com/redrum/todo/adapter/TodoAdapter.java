@@ -65,6 +65,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             Todo todo = todoList.get(position);
             todo.setChecked(is ? 1 : 0);
             DBHelper.updateData(db, todo);
+            mainActivity.status_refresh(db);
         });
 //        设置显示文本
         holder.textView.setText(todoList.get(position).getTitle());
@@ -108,6 +109,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         Todo todo = todoList.get(position);
         DBHelper.deleteData(db, todo);
         todoList.remove(position);
+        mainActivity.status_refresh(db);
 //        好像有点用
         notifyItemRemoved(position);
     }

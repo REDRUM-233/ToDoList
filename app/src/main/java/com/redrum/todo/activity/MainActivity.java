@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,25 +22,33 @@ import com.redrum.todo.TouchHelper;
 import com.redrum.todo.adapter.TodoAdapter;
 import com.redrum.todo.model.Todo;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 //主界面
 public class MainActivity extends AppCompatActivity {
-//    主页滚动的部分view
+    //    主页滚动的部分view
     private RecyclerView todoRecyclerView;
     private TodoAdapter todoAdapter;
 
-//    半自动半手写数据库帮手
+    //    半自动半手写数据库帮手
     private DBHelper dbHelper;
     private SQLiteDatabase db;
 
-//    消息发送接收器
+    //    消息发送接收器
 //    没想到这玩意要传给其他activity才能共享消息通道
 //    所以给它设置成公共且静态的了
 //    其他activity用MainActivity.handler调用
     public static Handler handler;
 
-//    supress巴拉巴拉我也不知道是什么，但是有了之后会少一点警告
+    TextView dateView;
+    TextView status;
+    ProgressBar progressBar;
+
+    //    supress巴拉巴拉我也不知道是什么，但是有了之后会少一点警告
     @Override
-    @SuppressLint({"HandlerLeak", "NotifyDataSetChanged"})
+    @SuppressLint({"HandlerLeak", "NotifyDataSetChanged", "SimpleDateFormat"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        设置显示的xml
@@ -48,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this, "temp_002.db3", null, 1);
 //        获得可读写数据库
         db = dbHelper.getReadableDatabase();
+
+        //处理概览
+        dateView = findViewById(R.id.main_overview_date);
+        status = findViewById(R.id.main_overview_status);
+        progressBar = findViewById(R.id.main_overview_progress);
+        dateView.setText(new SimpleDateFormat("MM月dd日 EEEE").format(new Date()));
+        status_refresh(db);
+
 
 //        消息处理机
         handler = new Handler() {
@@ -64,12 +82,13 @@ public class MainActivity extends AppCompatActivity {
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
                     DBHelper.insertData(db, todo);
-                }
-                else if(msg.what==1919810){
+                    status_refresh(db);
+                } else if (msg.what == 1919810) {
 //                    处理删除信息
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
                     DBHelper.deleteData(db, todo);
+                    status_refresh(db);
                 }
 //                自定义的刷新界面函数
                 todoAdapter.refresh();
@@ -103,5 +122,11 @@ public class MainActivity extends AppCompatActivity {
             // 启动intent对应的Activity
             startActivity(addIntent);
         });
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void status_refresh(SQLiteDatabase db) {
+        status.setText("今天已完成" + DBHelper.getCheckedCount(db) + "个待办事项（共" + DBHelper.getAllData(db).size() + "个）");
+        progressBar.setProgress((int) Math.floor(100.0 * DBHelper.getCheckedCount(db) / DBHelper.getAllData(db).size()));
     }
 }

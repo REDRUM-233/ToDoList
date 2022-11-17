@@ -102,6 +102,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
 
     public void insertData(Todo todo) {
+        todo.setId(todoList.size() + 1);
         todoList.add(todo);
         mainActivity.status_refresh();
         notifyItemInserted(todoList.size());

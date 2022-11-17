@@ -83,7 +83,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public static void updateDataBase(SQLiteDatabase db, List<Todo> list) {
-        db.execSQL("delete from todo_info;");
+        db.execSQL("drop table todo_info ");
+        db.execSQL("CREATE TABLE `todo_info`  (\n" +
+                "  `id` INTEGER PRIMARY KEY AUTOINCREMENT ,\n" +
+                "  `checked` integer ,\n" +
+                "  `type` varchar(255) ,\n" +
+                "  `title` varchar(255) ,\n" +
+                "  `desc` varchar(255) \n" +
+                ");\n");
         for (Todo i : list) {
             insertData(db, i);
         }

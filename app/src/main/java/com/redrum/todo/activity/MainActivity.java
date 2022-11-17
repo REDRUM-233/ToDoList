@@ -144,17 +144,4 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    @Override
-    protected void onStop() {
-        Log.d("cao", "run: 存了嘛你妈的");
-        DBHelper.updateDataBase(db, todoAdapter.getTodoList());
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d("cao", "run: 存了嘛你妈的");
-        DBHelper.updateDataBase(db, todoAdapter.getTodoList());
-        super.onDestroy();
-    }
 }

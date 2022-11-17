@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        初始化数据库和数据库帮手
-        dbHelper = new DBHelper(this, "temp_002.db3", null, 1);
+        dbHelper = new DBHelper(this, "temp_003.db3", null, 1);
 //        获得可读写数据库
         db = dbHelper.getReadableDatabase();
 

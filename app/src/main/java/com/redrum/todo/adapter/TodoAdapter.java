@@ -58,8 +58,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 //        设置相应
         holder.checkBox.setOnClickListener(view -> {
             int p = holder.getLayoutPosition();
-            while (p >= todoList.size())
-                Log.d("cao", "onBindViewHolder: 我草");
             Todo todo = todoList.get(p);
             todo.setChecked(~todo.getChecked() & 1);
             updateData(todo);

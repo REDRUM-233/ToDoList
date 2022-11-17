@@ -110,14 +110,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 "  `title` varchar(255) ,\n" +
                 "  `desc` varchar(255) \n" +
                 ");\n");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Todo i : checked)
-                    insertData(db, i);
-                for (Todo i : unchecked)
-                    insertData(db, i);
-            }
-        });
+        for (Todo i : checked)
+            insertData(db, i);
+        for (Todo i : unchecked)
+            insertData(db, i);
     }
 }

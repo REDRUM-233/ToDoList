@@ -27,6 +27,7 @@ import com.redrum.todo.model.Todo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DBHelper dbHelper = new DBHelper(this, "temp_3.db3", null, 1);
+        DBHelper dbHelper = new DBHelper(this, "temp_5.db3", null, 1);
         db = dbHelper.getReadableDatabase();
 
         handler = new Handler() {
@@ -67,12 +68,13 @@ public class MainActivity extends AppCompatActivity {
                 } else if (msg.what == 514) {
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
+                    todo.setId(todoAdapter_checked.getItemCount() + todoAdapter_unchecked.getItemCount());
                     if (todo.getChecked() == 1)
                         todoAdapter_checked.insertData(todo);
                     else
                         todoAdapter_unchecked.insertData(todo);
                     status_refresh();
-                } else if (msg.what == 1919810) {
+                } else if (msg.what == 1919) {
 //                    处理删除信息
                     Bundle data = msg.getData();
                     Todo todo = (Todo) data.getSerializable("info");
@@ -141,12 +143,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    int before, after, pace;
+    Timer timer;
+
     @SuppressLint("SetTextI18n")
     public void status_refresh() {
-        int checked = todoAdapter_checked.getTodoList().size();
-        int unchecked = todoAdapter_unchecked.getTodoList().size();
+        int checked = todoAdapter_checked.getItemCount();
+        int unchecked = todoAdapter_unchecked.getItemCount();
         status.setText("今天已完成" + checked + "个待办事项（共" + (checked + unchecked) + "个）");
-        progressBar.setProgress((int) Math.floor(100.0 * checked / (checked + unchecked)));
+        timer = new Timer();
+        before = progressBar.getProgress();
+        after = (int) Math.floor(100.0 * checked / (checked + unchecked));
+        pace = before < after ? 1 : -1;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (before != after) {
+                    progressBar.setProgress(before += pace);
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -154,15 +176,11 @@ public class MainActivity extends AppCompatActivity {
         if (type == 0) {
             Todo temp = todoAdapter_unchecked.deleteData(position);
             todoAdapter_checked.insertData(temp);
-            todoAdapter_unchecked.notifyItemRemoved(position);
-            todoAdapter_checked.notifyItemInserted(0);
         } else {
             Todo temp = todoAdapter_checked.deleteData(position);
             todoAdapter_unchecked.insertData(temp);
-            todoAdapter_checked.notifyItemRemoved(position);
-            todoAdapter_unchecked.notifyItemInserted(0);
         }
-        if (todoAdapter_checked.getTodoList().size() > 0) {
+        if (todoAdapter_checked.getItemCount() > 0) {
             show_switch(true);
         }
     }

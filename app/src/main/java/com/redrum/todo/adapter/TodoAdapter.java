@@ -120,20 +120,22 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     public void deleteData(Todo todo) {
         int position = todoList.indexOf(todo);
         todoList.remove(todo);
-        notifyItemChanged(position);
+        mainActivity.status_refresh();
+        notifyItemRemoved(position);
     }
 
     public void updateData(Todo todo) {
-        int position = 0;
         for (Todo i : todoList) {
             if (i.getId() == todo.getId()) {
-                boolean flag = i.getTitle() == todo.getTitle() && i.getChecked() == todo.getChecked();
-                i = todo;
+                int position = todoList.indexOf(i);
+                boolean flag = i.getTitle().equals(todo.getTitle()) && i.getChecked() == todo.getChecked();
+                todoList.remove(position);
+                todoList.add(position, todo);
+                Log.d("cao", "updateData: " + position + " " + flag);
                 if (!flag)
                     notifyItemChanged(position);
                 break;
             }
-            position++;
         }
     }
 

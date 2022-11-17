@@ -24,10 +24,8 @@ import com.redrum.todo.adapter.TodoAdapter;
 import com.redrum.todo.model.Todo;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 
 //主界面
 public class MainActivity extends AppCompatActivity {

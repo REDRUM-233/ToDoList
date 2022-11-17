@@ -2,7 +2,6 @@ package com.redrum.todo.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.redrum.todo.DBHelper;
 import com.redrum.todo.R;
 import com.redrum.todo.activity.MainActivity;
 import com.redrum.todo.activity.TodoDetail;
@@ -22,18 +20,17 @@ import com.redrum.todo.activity.TodoEdit;
 import com.redrum.todo.model.Todo;
 
 import java.util.List;
-import java.util.function.UnaryOperator;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
     //    数据表
-    private List<Todo> todoList;
+    private final List<Todo> todoList;
     //    用于启动其他activity的intent
-    private Intent editIntent;
-    private Intent detailIntent;
+    private final Intent editIntent;
+    private final Intent detailIntent;
     //    垃圾adapter巴拉巴拉很多限制，
 //    所以直接用MainActivity（挟天子以令诸侯！
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
 
     //    初始化
     public TodoAdapter(MainActivity activity, List<Todo> todoList) {
@@ -60,7 +57,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.checkBox.setChecked(todoList.get(position).getChecked() == 1);
 //        设置相应
         holder.checkBox.setOnClickListener(view -> {
-            Todo todo = todoList.get(position);
+            int p = holder.getLayoutPosition();
+            while (p >= todoList.size())
+                Log.d("cao", "onBindViewHolder: 我草");
+            Todo todo = todoList.get(p);
             todo.setChecked(~todo.getChecked() & 1);
             updateData(todo);
             mainActivity.status_refresh();

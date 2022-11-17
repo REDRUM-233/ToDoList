@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.redrum.todo.adapter.TodoAdapter;
 
 public class TouchHelper extends ItemTouchHelper.SimpleCallback {
-    private TodoAdapter adapter;
+    private final TodoAdapter adapter;
 
     public TouchHelper(TodoAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);

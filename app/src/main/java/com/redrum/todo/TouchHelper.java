@@ -15,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.redrum.todo.adapter.TodoAdapter;
 
+// 事项滑动响应
 public class TouchHelper extends ItemTouchHelper.SimpleCallback {
     private final TodoAdapter adapter;
 
+    // 设定adapter
     public TouchHelper(TodoAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
@@ -28,11 +30,16 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
         return false;
     }
 
+    // 设定滑动事件响应
     @Override
     public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+        // 恢复未滑动状态
+        adapter.notifyItemChanged(viewHolder.getLayoutPosition());
+        // 获得触发事项的位置
         final int position = viewHolder.getLayoutPosition();
+        // 左滑事件
         if (direction == ItemTouchHelper.LEFT) {
-            adapter.notifyItemChanged(viewHolder.getLayoutPosition());
+            // 创建对话框
             AlertDialog.Builder builder = new AlertDialog.Builder(adapter.getContext());
             builder.setTitle("删除");
             builder.setMessage("是否删除该Todo？");
@@ -40,6 +47,7 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            // 使用adapter自带的删除方法删除事项
                             adapter.deleteData(position);
                         }
                     });
@@ -47,17 +55,21 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            adapter.notifyItemChanged(viewHolder.getLayoutPosition());
                         }
                     });
             AlertDialog dialog = builder.create();
+            // 显示对话框
             dialog.show();
-        } else {
-            adapter.notifyItemChanged(viewHolder.getLayoutPosition());
+        }
+        // 右滑
+        // 跳转编辑界面
+        else {
+            // 同样调用adapter里面的方法跳转
             adapter.update(position);
         }
     }
 
+    // 滑动效果绘制
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

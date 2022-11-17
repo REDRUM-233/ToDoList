@@ -1,6 +1,5 @@
 package com.redrum.todo;
 
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -36,7 +35,7 @@ public class TouchHelper extends ItemTouchHelper.SimpleCallback {
             builder.setTitle("删除");
             builder.setMessage("是否删除该Todo？");
             builder.setPositiveButton("确定",
-                    (dialog, which) -> adapter.delete(position));
+                    (dialog, which) -> adapter.deleteData(position));
             builder.setNegativeButton("返回",
                     (dialog, which) -> adapter.notifyItemChanged(viewHolder.getLayoutPosition()));
             AlertDialog dialog = builder.create();

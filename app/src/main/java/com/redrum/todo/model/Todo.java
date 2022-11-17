@@ -106,7 +106,7 @@ public class Todo implements Serializable {
         cal.setTime(date);
         switch (Integer.parseInt(str[0])) {
             case 0:
-                return checked == 0;
+                return true;
             case 1:
                 return str[2].contains(1 + cal.get(Calendar.MONTH) + "") &&
                         Integer.parseInt(str[3]) <= cal.get(Calendar.DAY_OF_MONTH) &&
@@ -131,18 +131,31 @@ public class Todo implements Serializable {
         cal.setTime(new Date());
         switch (Integer.parseInt(str[0])) {
             case 1:
+                checked = 0;
                 cal.add(Calendar.DATE, 7 - cal.get(Calendar.DAY_OF_WEEK));
                 type = str[0] + "-" + str[1] + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH);
                 return this;
             case 2:
+                checked = 0;
                 type = str[0] + "-" + str[1] + "-" + (cal.get(Calendar.MONTH) + 1);
                 return this;
             case 3:
+                checked = 0;
                 type = str[0] + "-" + str[1] + "-" + (cal.get(Calendar.YEAR) + 1);
                 return this;
             case 4: {
+                checked = 0;
                 type = str[0] + "-" + (Math.max(Integer.parseInt(str[1]) - 1, 0));
             }
+        }
+        return this;
+    }
+
+    public Todo back_renew() {
+        String[] str = type.split("-");
+        if (Integer.parseInt(str[0]) == 4) {
+            checked = 0;
+            type = str[0] + "-" + (Math.max(Integer.parseInt(str[1]) + 1, 0));
         }
         return this;
     }

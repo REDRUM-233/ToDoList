@@ -93,4 +93,24 @@ public class DBHelper extends SQLiteOpenHelper {
                 "update todo_info set checked = ?, type = ?, title = ?, desc = ? where id = ?;"
                 , new String[]{todo.getChecked() + "", todo.getType(), todo.getTitle(), todo.getDesc() == null ? "" : todo.getDesc(), todo.getId() + ""});
     }
+
+    public static int getCheckedCount(SQLiteDatabase db) {
+        int cnt = 0;
+        for (Todo i : getAllData(db))
+            cnt += i.getChecked();
+        return cnt;
+    }
+
+    public static void updateDataBase(SQLiteDatabase db, List<Todo> checked, List<Todo> unchecked) {
+        db.execSQL("delete from todo_info;");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Todo i : checked)
+                    insertData(db, i);
+                for (Todo i : unchecked)
+                    insertData(db, i);
+            }
+        });
+    }
 }

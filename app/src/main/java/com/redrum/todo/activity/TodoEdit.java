@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -41,12 +40,6 @@ public class TodoEdit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_edit);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar == null)
-            throw new AssertionError();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         EditText title = findViewById(R.id.edit_title);
         EditText desc = findViewById(R.id.edit_desc);

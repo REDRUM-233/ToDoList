@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DBHelper dbHelper = new DBHelper(this, "temp_2.db3", null, 1);
+        DBHelper dbHelper = new DBHelper(this, "temp_3.db3", null, 1);
         db = dbHelper.getReadableDatabase();
 
         handler = new Handler() {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         dateView.setText(new SimpleDateFormat("MM月dd日 EEEE").format(new Date()));
 
         checked_switch = findViewById(R.id.main_checked_switch);
-        checked_switch.setVisibility(View.GONE);
+        show_switch(false);
 
         todoRecyclerView_checked = findViewById(R.id.recycle_view_checked);
         todoRecyclerView_checked.setVisibility(View.GONE);
@@ -109,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         todoAdapter_unchecked = new TodoAdapter(this, 0, db);
         todoRecyclerView_unchecked.setAdapter(todoAdapter_unchecked);
 
+
+        status_refresh();
 
         checked_switch.setOnClickListener(view -> {
             if (todoRecyclerView_checked.getVisibility() == View.VISIBLE) {
@@ -159,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
             todoAdapter_unchecked.insertData(temp);
             todoAdapter_checked.notifyItemRemoved(position);
             todoAdapter_unchecked.notifyItemInserted(0);
+        }
+        if (todoAdapter_checked.getTodoList().size() > 0) {
+            show_switch(true);
         }
     }
 

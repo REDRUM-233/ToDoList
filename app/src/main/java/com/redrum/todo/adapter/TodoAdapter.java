@@ -57,7 +57,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     public void onBindViewHolder(@NonNull TodoViewHolder holder, @SuppressLint("RecyclerView") int position) {
         refresh();
         holder.checkBox.setChecked(todoList.get(position).getChecked() == 1);
-        holder.checkBox.setOnClickListener(view -> checkChange(position));
+        holder.checkBox.setOnClickListener(view -> checkChange(holder.getLayoutPosition()));
         holder.textView.setText(todoList.get(position).getTitle());
         holder.textView.setOnClickListener(view -> {
             Bundle data = new Bundle();
@@ -93,6 +93,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     }
 
     public void insertData(Todo todo) {
+        todo.setId(todoList.size() + 1);
         todoList.add(todo);
         mainActivity.status_refresh();
         notifyItemInserted(todoList.size());

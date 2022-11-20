@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +22,24 @@ import com.redrum.todo.activity.TodoEdit;
 import com.redrum.todo.model.Todo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
     private List<Todo> todoList;
+    private List<Todo> showList;
     private final SQLiteDatabase db;
     private final MainActivity mainActivity;
-    private final int adapterType;
+    private int adapterType = 0;
 
     public TodoAdapter(MainActivity activity, int type, SQLiteDatabase db) {
         this.mainActivity = activity;
         this.adapterType = type;
         this.db = db;
         refresh();
+        changeType(0);
     }
 
     public List<Todo> getTodoList() {
@@ -55,12 +57,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     // 为列表项组件绑定数据的方法，每次组件重新显示出来时都会重新执行该方法
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.checkBox.setChecked(todoList.get(position).getChecked() == 1);
+        holder.checkBox.setChecked(showList.get(position).getChecked() == 1);
         holder.checkBox.setOnClickListener(view -> checkChange(holder.getLayoutPosition()));
-        holder.textView.setText(todoList.get(position).getTitle());
+        holder.textView.setText(showList.get(position).getTitle());
         holder.textView.setOnClickListener(view -> {
             Bundle data = new Bundle();
-            data.putSerializable("Info", todoList.get(position));
+            data.putSerializable("Info", showList.get(position));
             data.putSerializable("action", "update");
             Intent intent = new Intent(getContext(), TodoDetail.class);
             intent.putExtras(data);
@@ -72,7 +74,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     // 该方法的返回值决定包含多少个列表项
     @Override
     public int getItemCount() {
-        return todoList.size();
+        return showList.size();
     }
 
     public static class TodoViewHolder extends RecyclerView.ViewHolder {
@@ -92,22 +94,25 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     }
 
     public void insertData(Todo todo) {
-        todoList.add(todo);
+        todoList.add(0, todo);
+        showList.add(0, todo);
         mainActivity.status_refresh();
-        notifyItemInserted(todoList.size() - 1);
+        notifyItemInserted(0);
     }
 
     public Todo deleteData(int position) {
         Todo todo = todoList.get(position);
         todoList.remove(position);
+        showList.remove(position);
         mainActivity.status_refresh();
         notifyItemRemoved(position);
         return todo;
     }
 
     public void deleteData(Todo todo) {
-        int position = todoList.indexOf(todo);
+        int position = showList.indexOf(todo);
         todoList.remove(todo);
+        showList.remove(todo);
         mainActivity.status_refresh();
         notifyItemRemoved(position);
     }
@@ -116,20 +121,18 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         for (Todo i : todoList) {
             if (i.getId() == todo.getId()) {
                 int position = todoList.indexOf(i);
-                boolean flag = i.getTitle().equals(todo.getTitle()) && i.getChecked() == todo.getChecked();
                 todoList.remove(position);
                 todoList.add(position, todo);
-                if (!flag)
-                    notifyItemChanged(position);
                 break;
             }
         }
+        changeType(adapterType);
     }
 
     public void update(int position) {
         Bundle data = new Bundle();
         data.putSerializable("action", "update");
-        data.putSerializable("Info", todoList.get(position));
+        data.putSerializable("Info", showList.get(position));
         Intent intent = new Intent(getContext(), TodoEdit.class);
         intent.putExtras(data);
         // 启动intent对应的Activity
@@ -138,48 +141,60 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     @SuppressLint("NotifyDataSetChanged")
     public void checkChange(int position) {
-        Todo todo = todoList.get(position);
+        Todo todo = showList.get(position);
         todo.setChecked(~todo.getChecked() & 1);
+        updateData(todo);
 
         String[] type = todo.getType().split("-");
         if (todo.getChecked() == 1) {
-            if (type[0].equals("4")) {
+            if (type[0].equals("4") && Integer.parseInt(type[1]) <= 1) {
                 Todo temp = todo.renew();
                 updateData(temp);
-                if (Integer.parseInt(type[1]) <= 1) {
-                    temp.setChecked(1);
-                    updateData(temp);
-                    mainActivity.recycle_view_refresh(0, position);
-                }
-            } else {
-                mainActivity.recycle_view_refresh(0, position);
             }
-        } else {
-            if (type[0].equals("4")) {
-                updateData(todo.back_renew());
-            }
-            mainActivity.recycle_view_refresh(1, position);
         }
+        sort();
+        notifyDataSetChanged();
         mainActivity.status_refresh();
     }
 
     public void refresh() {
         todoList = new ArrayList<>();
+        showList = new ArrayList<>();
         List<Todo> tempList = DBHelper.getAllData(db);
         for (Todo i : tempList)
-            if (adapterType == i.getChecked()) {
-                if (i.isShowable(new Date()))
-                    todoList.add(i);
-                else if (i.isRenewable()) {
-                    Todo temp = i.renew();
-                    temp.setChecked(0);
-                    DBHelper.updateData(db, temp);
-                }
+            if (i.isShowable(new Date()))
+                todoList.add(i);
+            else if (i.isRenewable()) {
+                Todo temp = i.renew();
+                temp.setChecked(0);
+                todoList.add(i);
             }
-        if (adapterType == 1) {
-            if (todoList.size() > 0)
-                Log.d("cao", "refresh: 胆子夺大啊！" + adapterType + "   " + todoList.size());
-            mainActivity.show_switch(todoList.size() > 0);
-        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void sort() {
+        showList.sort(Comparator.comparing(Todo::getChecked));
+        notifyDataSetChanged();
+    }
+
+    public List<Todo> getUnchecked() {
+        todoList.sort(Comparator.comparing(Todo::getChecked));
+        int flag = 0;
+        for (Todo i : todoList)
+            if (i.getChecked() == 0)
+                flag++;
+            else break;
+        return new ArrayList<>(todoList.subList(0, flag));
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void changeType(int type) {
+        adapterType = type;
+        showList = type == 0 ? getUnchecked() : new ArrayList<>(todoList);
+        notifyDataSetChanged();
+    }
+
+    public int getAdapterType() {
+        return adapterType;
     }
 }

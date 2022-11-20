@@ -101,7 +101,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return cnt;
     }
 
-    public static void updateDataBase(SQLiteDatabase db, List<Todo> checked, List<Todo> unchecked) {
+    public static void updateDataBase(SQLiteDatabase db, List<Todo> todoList) {
         db.execSQL("drop table todo_info ");
         db.execSQL("CREATE TABLE `todo_info`  (\n" +
                 "  `id` INTEGER PRIMARY KEY AUTOINCREMENT ,\n" +
@@ -110,9 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "  `title` varchar(255) ,\n" +
                 "  `desc` varchar(255) \n" +
                 ");\n");
-        for (Todo i : checked)
-            insertData(db, i);
-        for (Todo i : unchecked)
+        for (Todo i : todoList)
             insertData(db, i);
     }
 }

@@ -7,13 +7,6 @@ import java.io.Serializable;
 public class Todo implements Serializable {
     private int id;
     private int checked;
-//    实际上已经被我阉割了
-    /* 格式设置
-     * 普通单次任务 0
-     * 每周任务 1-从小到大记录生成时间如135,17(0表示每周单次任务)-(该事件月-日)
-     * 每月任务 2-(该事件月)
-     * 每年任务 3-(该事件年)
-     * 自定义次数任务 4-剩余完成次数*/
     private String type;
     private String title;
     private String desc;

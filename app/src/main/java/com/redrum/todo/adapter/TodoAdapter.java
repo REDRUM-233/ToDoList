@@ -63,7 +63,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.textView.setOnClickListener(view -> {
             Bundle data = new Bundle();
             data.putSerializable("Info", showList.get(position));
-            data.putSerializable("action", "update");
             Intent intent = new Intent(getContext(), TodoDetail.class);
             intent.putExtras(data);
             // 启动intent对应的Activity
@@ -142,6 +141,23 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     @SuppressLint("NotifyDataSetChanged")
     public void checkChange(int position) {
         Todo todo = showList.get(position);
+        todo.setChecked(~todo.getChecked() & 1);
+        updateData(todo);
+
+        String[] type = todo.getType().split("-");
+        if (todo.getChecked() == 1) {
+            if (type[0].equals("4") && Integer.parseInt(type[1]) <= 1) {
+                Todo temp = todo.renew();
+                updateData(temp);
+            }
+        }
+        sort();
+        notifyDataSetChanged();
+        mainActivity.status_refresh();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void checkChange(Todo todo) {
         todo.setChecked(~todo.getChecked() & 1);
         updateData(todo);
 

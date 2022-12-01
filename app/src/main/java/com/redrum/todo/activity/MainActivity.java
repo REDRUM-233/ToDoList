@@ -24,6 +24,7 @@ import com.redrum.todo.TouchHelper;
 import com.redrum.todo.adapter.TodoAdapter;
 import com.redrum.todo.model.Todo;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DBHelper dbHelper = new DBHelper(this, "temp_7.db3", null, 1);
+        DBHelper dbHelper = new DBHelper(this, getString(R.string.db), null, 1);
         db = dbHelper.getReadableDatabase();
 
         handler = new Handler() {
@@ -146,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d("cao", "run: 存了嘛你妈的");
         DBHelper.updateDataBase(db, todoAdapter.getTodoList());
         super.onPause();
     }
+
+
 }

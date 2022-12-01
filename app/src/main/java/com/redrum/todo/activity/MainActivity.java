@@ -1,6 +1,8 @@
 package com.redrum.todo.activity;
 
 import android.annotation.SuppressLint;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.redrum.todo.DBHelper;
+import com.redrum.todo.DesktopProvider;
 import com.redrum.todo.R;
 import com.redrum.todo.TouchHelper;
 import com.redrum.todo.adapter.TodoAdapter;
@@ -148,8 +151,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         DBHelper.updateDataBase(db, todoAdapter.getTodoList());
+//        刷新桌面组件
+        AppWidgetManager mgr = AppWidgetManager.getInstance(this);
+        ComponentName cn = new ComponentName(this, DesktopProvider.class);
+        mgr.notifyAppWidgetViewDataChanged(mgr.getAppWidgetIds(cn), R.id.widget_list);
         super.onPause();
     }
-
-
 }

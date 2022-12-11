@@ -162,6 +162,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         updateData(todo);
 
         String[] type = todo.getType().split("-");
+//        如果是checked且为计数时间则要当场刷新
         if (todo.getChecked() == 1) {
             if (type[0].equals("4") && Integer.parseInt(type[1]) <= 1) {
                 Todo temp = todo.renew();

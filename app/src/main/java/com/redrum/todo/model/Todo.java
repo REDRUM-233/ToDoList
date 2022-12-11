@@ -151,15 +151,6 @@ public class Todo implements Serializable {
         return this;
     }
 
-    public Todo back_renew() {
-        String[] str = type.split("-");
-        if (Integer.parseInt(str[0]) == 4) {
-            checked = 0;
-            type = str[0] + "-" + (Math.max(Integer.parseInt(str[1]) + 1, 0));
-        }
-        return this;
-    }
-
     public Todo changeType(int t, String addition) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());

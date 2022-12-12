@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -119,12 +121,22 @@ public class DesktopProvider extends AppWidgetProvider {
                 detail_intent.putExtras(data);
                 context.startActivity(detail_intent);
             } else if (ITEM_CHECKED_ACTION.equals(intent.getSerializableExtra("type"))) {
+                Log.d("cao", "onReceive: nm!");
                 // 数据库
                 DBHelper dbHelper = new DBHelper(context, context.getString(R.string.db), null, 1);
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 Todo todo = (Todo) intent.getSerializableExtra("Info");
                 todo.setChecked(1);
+                Log.d("cao", "onReceive: " + todo.getId());
                 DBHelper.updateData(db, todo);
+
+               Message message = new Message();
+                Bundle data = new Bundle();
+                data.putSerializable("info", todo);
+                message.setData(data);
+                message.what = 114;
+                Handler handler = MainActivity.handler;
+                handler.sendMessage(message);
 
 //                调用notifyAppWidgetViewDataChanged刷新listview
                 AppWidgetManager mgr = AppWidgetManager.getInstance(context);

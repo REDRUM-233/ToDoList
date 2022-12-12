@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -57,16 +58,19 @@ public class DesktopService extends RemoteViewsService {
             db = dbHelper.getReadableDatabase();
             todoList.clear();
             List<Todo> tempList = DBHelper.getAllData(db);
-            db.close();
-            for (Todo i : tempList)
+            for (Todo i : tempList) {
                 if (i.isShowable(new Date())) {
                     if (i.getChecked() == 0)
                         todoList.add(i);
                 } else if (i.isRenewable()) {
+                    Log.d("cao", "onDataSetChanged: "+i.getTypeDesc());
                     Todo temp = i.renew();
                     temp.setChecked(0);
+                    Log.d("cao", "onDataSetChanged: "+i.getTypeDesc());
+                    DBHelper.updateData(db, temp);
                     todoList.add(i);
                 }
+            }
         }
 
         @Override

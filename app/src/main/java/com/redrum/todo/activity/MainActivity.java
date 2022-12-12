@@ -27,7 +27,6 @@ import com.redrum.todo.TouchHelper;
 import com.redrum.todo.adapter.TodoAdapter;
 import com.redrum.todo.model.Todo;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -88,9 +87,9 @@ public class MainActivity extends AppCompatActivity {
         checked_switch = findViewById(R.id.main_checked_switch);
 
         todoRecyclerView = findViewById(R.id.main_recycle_view);
-        LinearLayoutManager layoutManager_checked = new LinearLayoutManager(this);
-        layoutManager_checked.setOrientation(LinearLayoutManager.VERTICAL);
-        todoRecyclerView.setLayoutManager(layoutManager_checked);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        todoRecyclerView.setLayoutManager(layoutManager);
         todoAdapter = new TodoAdapter(this, 1, db);
         todoAdapter.changeType(0);
         todoRecyclerView.setAdapter(todoAdapter);
@@ -146,6 +145,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    protected void onResume() {
+        Log.d("cao", "onResume: ");
+        todoAdapter.notifyDataSetChanged();
+        status_refresh();
+        super.onResume();
     }
 
     @Override

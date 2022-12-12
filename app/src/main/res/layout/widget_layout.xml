@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/blue_light"
+        android:background="@color/purple"
         android:padding="8dp">
 
         <Button

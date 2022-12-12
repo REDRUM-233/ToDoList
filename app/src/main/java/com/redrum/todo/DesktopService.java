@@ -57,16 +57,17 @@ public class DesktopService extends RemoteViewsService {
             db = dbHelper.getReadableDatabase();
             todoList.clear();
             List<Todo> tempList = DBHelper.getAllData(db);
-            db.close();
-            for (Todo i : tempList)
+            for (Todo i : tempList) {
                 if (i.isShowable(new Date())) {
                     if (i.getChecked() == 0)
                         todoList.add(i);
                 } else if (i.isRenewable()) {
                     Todo temp = i.renew();
                     temp.setChecked(0);
+                    DBHelper.updateData(db, temp);
                     todoList.add(i);
                 }
+            }
         }
 
         @Override

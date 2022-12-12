@@ -184,7 +184,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             else if (i.isRenewable()) {
                 Todo temp = i.renew();
                 temp.setChecked(0);
-                todoList.add(i);
+                todoList.add(temp);
             }
     }
 

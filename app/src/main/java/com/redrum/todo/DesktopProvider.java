@@ -8,7 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.RemoteViews;
 
 import com.redrum.todo.activity.MainActivity;
@@ -125,6 +126,14 @@ public class DesktopProvider extends AppWidgetProvider {
                 Todo todo = (Todo) intent.getSerializableExtra("Info");
                 todo.setChecked(1);
                 DBHelper.updateData(db, todo);
+
+               Message message = new Message();
+                Bundle data = new Bundle();
+                data.putSerializable("info", todo);
+                message.setData(data);
+                message.what = 114;
+                Handler handler = MainActivity.handler;
+                handler.sendMessage(message);
 
 //                调用notifyAppWidgetViewDataChanged刷新listview
                 AppWidgetManager mgr = AppWidgetManager.getInstance(context);

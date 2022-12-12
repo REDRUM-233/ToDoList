@@ -86,16 +86,16 @@ public class Todo implements Serializable {
                 return "单次事件";
             case 1: {
                 if (Integer.parseInt(str[1]) == 0)
-                    return "每周事件-本次事件截止时间:" + str[2] + "月" + str[3] + "日";
+                    return "每周事件\n本次事件截止时间:" + str[2] + "月" + str[3] + "日";
                 else
-                    return "每周" + str[1] + "事件-本次事件截止时间:" + str[2] + "月" + str[3] + "日";
+                    return "每周" + str[1] + "事件\n本次事件截止时间:" + str[2] + "月" + str[3] + "日";
             }
             case 2:
-                return "每月事件-本次事件截止时间:" + str[1] + "月";
+                return "每月事件\n本次事件截止时间:" + str[1] + "月";
             case 3:
-                return "每年事件-本次事件截止时间:" + str[1] + "年";
+                return "每年事件\n本次事件截止时间:" + str[1] + "年";
             case 4:
-                return "自定义次数任务-剩余完成次数:" + str[1];
+                return "自定义次数任务\n剩余完成次数:" + str[1];
         }
         return "错误类型";
     }
@@ -108,13 +108,12 @@ public class Todo implements Serializable {
             case 0:
                 return true;
             case 1:
-                return str[2].contains(1 + cal.get(Calendar.MONTH) + "") &&
-                        Integer.parseInt(str[3]) <= cal.get(Calendar.DAY_OF_MONTH) &&
-                        str[1].contains("" + cal.get(Calendar.DAY_OF_WEEK));
+                return Integer.parseInt(str[2]) == cal.get(Calendar.MONTH) + 1 &&
+                        Integer.parseInt(str[3]) >= cal.get(Calendar.DAY_OF_MONTH) + 1;
             case 2:
-                return str[1].contains(1 + cal.get(Calendar.MONTH) + "");
+                return Integer.parseInt(str[1]) == cal.get(Calendar.MONTH) + 1;
             case 3:
-                return str[1].contains(cal.get(Calendar.YEAR) + "");
+                return Integer.parseInt(str[1]) == cal.get(Calendar.YEAR);
             case 4:
                 return Integer.parseInt(str[1]) > 0;
         }
@@ -122,6 +121,7 @@ public class Todo implements Serializable {
     }
 
     public boolean isRenewable() {
+        Calendar cal = Calendar.getInstance();
         return "1234".contains(type.split("-")[0]);
     }
 
@@ -132,8 +132,8 @@ public class Todo implements Serializable {
         switch (Integer.parseInt(str[0])) {
             case 1:
                 checked = 0;
-                cal.add(Calendar.DATE, 7 - cal.get(Calendar.DAY_OF_WEEK));
-                type = str[0] + "-" + str[1] + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH);
+                cal.add(Calendar.DATE, cal.get(Calendar.DAY_OF_WEEK) - 1 == 0 ? 0 : 8 - cal.get(Calendar.DAY_OF_WEEK));
+                type = str[0] + "-" + str[1] + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH);
                 return this;
             case 2:
                 checked = 0;
@@ -159,11 +159,11 @@ public class Todo implements Serializable {
                 type = "0";
                 break;
             case 1:
-                cal.add(Calendar.DATE, 7 - cal.get(Calendar.DAY_OF_WEEK));
-                type = "1-" + addition + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH);
+                cal.add(Calendar.DATE, 7 - cal.get(Calendar.DAY_OF_WEEK) + 1);
+                type = "1-" + addition + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH);
                 break;
             case 2:
-                type = "2-" + cal.get(Calendar.MONTH);
+                type = "2-" + (cal.get(Calendar.MONTH) + 1);
                 break;
             case 3:
                 type = "3-" + cal.get(Calendar.YEAR);

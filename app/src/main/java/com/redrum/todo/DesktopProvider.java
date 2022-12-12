@@ -13,6 +13,7 @@ import android.os.Message;
 import android.widget.RemoteViews;
 
 import com.redrum.todo.activity.MainActivity;
+import com.redrum.todo.activity.SplashActivity;
 import com.redrum.todo.activity.TodoDetail;
 import com.redrum.todo.activity.TodoEdit;
 import com.redrum.todo.model.Todo;
@@ -92,7 +93,7 @@ public class DesktopProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (JUMP2HOME.equals(intent.getAction())) {
-            Intent home_intent = new Intent(context, MainActivity.class);
+            Intent home_intent = new Intent(context, SplashActivity.class);
 //            设置创建新进程
             home_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(home_intent);

@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -150,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onResume() {
-        Log.d("cao", "onResume: ");
         todoAdapter.notifyDataSetChanged();
         status_refresh();
         super.onResume();
